@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTf-8">
+	<title>NewTetris</title>
+	<style>
+		* {padding: 0; margin-top: 20;}
+		canvas{background-color: gray; display: block; margin: 0 auto;}
+	</style>
+</head>
+
+<body>
+
+	<canvas id="tetrisCanvas" width="400" height="500"></canvas>
+
+
+	<script type="text/javascript">
+
+		var canvas = document.getElementById("tetrisCanvas");
+		var ctx = canvas.getContext("2d");
+		var areaMargin = 20;
+		var rectWidth = 75;
+		var rectHeight = 50;
+		var speed = 10;
+		var x = canvas.width/2 - rectWidth/2;
+		var y = areaMargin - speed;
+		var pressedRight = false;
+		var pressedLeft = false;
+
+		document.addEventListener("keyup", keyboardUp, false);
+		document.addEventListener("keydown", keyboardDown , false);
+
+		function keyboardUp(e){
+			
+			if(e.keyCode == 39)
+			{
+				pressedRight = false;
+			}
+			if(e.keyCode == 37)
+			{
+				pressedLeft = false;
+			}
+		}
+
+		function keyboardDown(e){
+			if(e.keyCode == 39)
+			{
+				pressedRight = true;
+			}
+			if(e.keyCode == 37)
+			{
+				pressedLeft = true;
+			}
+		}
+
+		class Rectangle{
+			constructor(x, y, width, height, color){
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				this.color = color;
+				
+			}
+			drawR(){
+				ctx.beginPath();
+				ctx.rect(this.x, this.y, this.width, this.height);
+				ctx.fillStyle =  this.color;
+				ctx.fill();
+				ctx.closePath();
+			}
+		}
+
+		class playArea extends Rectangle{
+			constructor(x, y, width, height, color){
+				super(x, y,width, height, color);
+				/*this.x = x;
+				this.y = y;
+				this.height = height;
+				this.width = width;
+				this.color = color;*/
+			}
+			drawR(){
+				ctx.beginPath();
+				ctx.rect(this.x, this.y, this.width, this.height);
+				ctx.strokeStyle = this.color;
+				ctx.stroke();
+				ctx.closePath();
+			}
+		}
+
+
+		var arena = new playArea(areaMargin, areaMargin, canvas.width - areaMargin*2, canvas.height - areaMargin*2, "cyan");
+		arena.drawR();
+		
+		
+
+		function fallRect(){
+			if(y < canvas.height - areaMargin*2 - rectHeight/2 - speed)
+			{
+				y += speed;
+					
+			}
+			if(pressedLeft && x > areaMargin + speed/2)
+			{
+				x -= speed;
+			}
+			if(pressedRight && x < canvas.width - areaMargin*2 - rectWidth/2 - speed*2 )
+			{
+				x += speed;
+			}
+		draw();
+		}
+		
+		function draw(){
+			ctx.clearRect(areaMargin, areaMargin, canvas.width - areaMargin*2, canvas.height - areaMargin*2);
+			var nRect = new Rectangle(/*canvas.width/2 - rectWidth/2*/x, y, rectWidth, rectHeight, "cyan");
+			nRect.drawR();
+		}
+		
+		setInterval(fallRect, 300);
+	</script>
+
+
+</body>
